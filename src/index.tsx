@@ -21,6 +21,8 @@ import {
     findNodeHandle,
     ImageStyle,
     ColorValue,
+    ImageSourcePropType,
+    ImageURISource,
 } from 'react-native'
 
 const FastImageViewNativeModule = NativeModules.FastImageView
@@ -53,13 +55,6 @@ const cacheControl = {
     cacheOnly: 'cacheOnly',
 } as const
 
-export type Source = {
-    uri?: string
-    headers?: { [key: string]: string }
-    priority?: Priority
-    cache?: Cache
-}
-
 export interface OnLoadEvent {
     nativeEvent: {
         width: number
@@ -76,7 +71,7 @@ export interface OnProgressEvent {
 }
 
 export interface FastImageProps extends AccessibilityProps, ViewProps {
-    source: Source | ImageRequireSource
+    source: ImageSourcePropType
     defaultSource?: ImageRequireSource
     resizeMode?: ResizeMode
     fallback?: boolean
@@ -225,7 +220,7 @@ export interface FastImageStaticProperties {
     resizeMode: typeof resizeMode
     priority: typeof priority
     cacheControl: typeof cacheControl
-    preload: (sources: Source[]) => void
+    preload: (sources: ImageURISource[]) => void
     clearMemoryCache: () => Promise<void>
     clearDiskCache: () => Promise<void>
     playAnimation(): void
@@ -241,7 +236,7 @@ FastImage.cacheControl = cacheControl
 
 FastImage.priority = priority
 
-FastImage.preload = (sources: Source[]) =>
+FastImage.preload = (sources: ImageURISource[]) =>
     FastImageViewNativeModule.preload(sources)
 
 FastImage.clearMemoryCache = () => FastImageViewNativeModule.clearMemoryCache()
