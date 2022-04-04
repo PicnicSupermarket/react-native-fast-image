@@ -23,6 +23,7 @@ import {
     ColorValue,
     ImageSourcePropType,
     ImageURISource,
+    MeasureInWindowOnSuccessCallback,
 } from 'react-native'
 
 const FastImageViewNativeModule = NativeModules.FastImageView
@@ -142,8 +143,10 @@ function FastImageBase({
     ...props
 }: FastImageProps & { forwardedRef: React.Ref<any> }) {
     const innerRef = useRef<typeof FastImageView>(null)
+    const outerRef = useRef<View>(null)
 
     useImperativeHandle(forwardedRef, () => ({
+        measureInWindow: (cb: MeasureInWindowOnSuccessCallback) => outerRef.current?.measureInWindow(cb),
         playAnimation: () => {
             FastImageViewNativeModule.playAnimation(
                 findNodeHandle(innerRef?.current),
@@ -157,7 +160,7 @@ function FastImageBase({
         const resolvedSource = Image.resolveAssetSource(cleanedSource)
 
         return (
-            <View style={[styles.imageContainer, style]} ref={forwardedRef}>
+            <View style={[styles.imageContainer, style]} ref={outerRef}>
                 <Image
                     {...props}
                     style={StyleSheet.absoluteFill}
@@ -186,7 +189,7 @@ function FastImageBase({
     }
 
     return (
-        <View style={[styles.imageContainer, style]} ref={forwardedRef}>
+        <View style={[styles.imageContainer, style]} ref={outerRef}>
             <FastImageView
                 {...props}
                 ref={innerRef}
