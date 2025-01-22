@@ -122,6 +122,9 @@ class FastImageViewManager extends SimpleViewManager<FastImageViewWithUrl> imple
 
         Drawable placeholderDrawable = view.getPlaceholderDrawable();
 
+        if (isValidContextForGlide(view.getContext())) {
+            requestManager = Glide.with(view.getContext());
+        }
         if (requestManager != null) {
             requestManager
                     // This will make this work for remote and local images. e.g.
